@@ -1,0 +1,14 @@
+{% extends 'deal_findr/base.html' %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+{% if user.is_authenticated %}
+  Hi {{ user.username }}!
+  <p><a href="{% url 'deal_findr:logout' %}">logout</a></p>
+  <a href="{% url 'deal_findr:form' %}">Deal</a>
+{% else %}
+  <p>You are not logged in</p>
+  <a href="{% url 'deal_findr:login' %}">login </a>
+{% endif %}
+{% endblock %}
