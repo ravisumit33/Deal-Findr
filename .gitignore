@@ -1,3 +1,10 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+
+
 credentials.json
 service-account-key.json
-/deal_findr/deal_findr.log
+*.log

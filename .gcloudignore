@@ -13,7 +13,7 @@
 .git
 .gitignore
 service-account-key.json
-/deal_findr/deal_findr.log
+*.log
 credentials.json
 
 # Python pycache:
