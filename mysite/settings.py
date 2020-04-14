@@ -10,35 +10,25 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
+import django_heroku
 import os
-import json 
-from google.cloud import kms_v1
-
-def decrypt_symmetric(ciphertext):
-    client = kms_v1.KeyManagementServiceClient();
-    resource_name = client.crypto_key_path_path("deal-findr-33", "global", "deal_findr", "deal_findr")
-    response = client.decrypt(resource_name, ciphertext)
-    return response.plaintext
-
+#import json 
+#from google.cloud import kms_v1
+import dj_database_url
+from credential_manager import decrypt
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
-with open(os.path.join(BASE_DIR, 'credentials.json.encrypted'), 'rb') as cred:
-    data = cred.read()
-
-dec_cred = decrypt_symmetric(data).decode(); 
-cred = json.loads(dec_cred)
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = cred['SECRET_KEY']
+SECRET_KEY = os.environ['SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True 
+DEBUG = False 
 
 ALLOWED_HOSTS = ['*']
 
@@ -94,10 +84,11 @@ PHONENUMBER_DEFAULT_REGION = 'IN'
 # Install PyMySQL as mysqlclient/MySQLdb to use Django's mysqlclient adapter
 # See https://docs.djangoproject.com/en/2.1/ref/databases/#mysql-db-api-drivers
 # for more information
-import pymysql  # noqa: 402
-pymysql.install_as_MySQLdb()
+#import pymysql  # noqa: 402
+#pymysql.install_as_MySQLdb()
 
 # [START db_setup]
+'''
 if os.getenv('GAE_APPLICATION', None):
     # Running on production App Engine, so connect to Google Cloud SQL using
     # the unix socket at /cloudsql/<your-cloudsql-connection string>
@@ -127,16 +118,11 @@ else:
             'PASSWORD': cred['DB_PASSWD'],
         }
     }
+'''
+DATABASES = { 'default' : dj_database_url.config()}
+
 # [END db_setup]
 
-"""
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
-}
-"""
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
@@ -181,38 +167,20 @@ STATIC_ROOT = 'static'
 STATIC_URL = '/static/'
 
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = cred['EMAIL_HOST_USER'] 
-EMAIL_HOST_PASSWORD = cred['EMAIL_HOST_PASSWD'] 
+EMAIL_HOST_USER = decrypt.cred['EMAIL_HOST_USER'] 
+EMAIL_HOST_PASSWORD = decrypt.cred['EMAIL_HOST_PASSWD'] 
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
 
-"""
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'file': {
-            'level': 'DEBUG',
-            'class': 'logging.FileHandler',
-            'filename': 'deal_findr/deal_findr.log',
-        },
-    },
-    'loggers': {
-        'django': {
-            'handlers': ['file'],
-            'level': 'DEBUG',
-            'propagate': True,
-        },
-        'deal_findr': {
-            'handlers': ['file'],
-            'level': 'DEBUG',
-            'propagate': True,
-        }
-    } 
-}
-"""
 
 LOGIN_URL = 'deal_findr:login'
 LOGIN_REDIRECT_URL = 'deal_findr:home'
 LOGOUT_REDIRECT_URL = 'deal_findr:home'
+
+try:
+    from mysite.local_settings import *
+except Exception as e:
+    pass
+
+django_heroku.settings(locals())

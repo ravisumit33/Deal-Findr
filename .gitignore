@@ -3,8 +3,10 @@ __pycache__/
 *.py[cod]
 *$py.class
 
-
-
-credentials.json
-service-account-key.json
+.gitignore
+.env
+mysite/local_settings.py
+credential_manager/credentials.json
+credential_manager/service-account-key.json
+credential_manager/encryption_key.key
 *.log
