@@ -6,8 +6,7 @@ import json
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 def encrypt(plaintext):
-    with open(os.path.join(BASE_DIR, os.environ['ENCRYPTION_KEY_PATH']), 'rb') as fp:
-        key = fp.read()
+    key = os.environ['ENCRYPTION_KEY']
     fernet = Fernet(key)
     ciphertext = fernet.encrypt(plaintext)
     return ciphertext

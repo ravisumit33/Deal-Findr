@@ -3,6 +3,10 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+*.pyc
+*~
+*.swp
+
 .gitignore
 .env
 mysite/local_settings.py
