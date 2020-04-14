@@ -19,4 +19,3 @@ with open(os.path.join(BASE_DIR, 'credentials.encrypted'), 'rb') as cred:
 
 dec_cred = decrypt(data).decode(); 
 cred = json.loads(dec_cred)
-print(json.dumps(cred, indent=2))
