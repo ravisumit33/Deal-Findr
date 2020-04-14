@@ -7,8 +7,7 @@ from google.cloud import kms_v1
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 def decrypt(ciphertext):
-    with open(os.path.join(BASE_DIR, os.environ['ENCRYPTION_KEY_PATH']), 'rb') as fp:
-        key = fp.read()
+    key = os.environ['ENCRYPTION_KEY']
     fernet = Fernet(key)
     plaintext = fernet.decrypt(ciphertext)
     return plaintext
