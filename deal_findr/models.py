@@ -10,10 +10,22 @@ class CustomUser(AbstractUser):
     phone = PhoneNumberField()
 
 
-class Deals(models.Model):
+class Deal(models.Model):
+    WEBSITE_CHOICES = (
+        ('Choose Website', 'Choose Website'),
+        ('Amazon', 'Amazon'),
+        ('Flipkart', 'Flipkart'),
+        ('Snapdeal', 'Snapdeal'),
+        ('Myntra', 'Myntra'),
+    )
     customer = models.ForeignKey(
         get_user_model(),
         on_delete=models.CASCADE
     )
-    website = models.CharField(max_length=50)
-
+    website = models.CharField(
+        max_length=14,
+        choices = WEBSITE_CHOICES,
+        default = 'Choose Website'
+    )
+    budget = models.DecimalField(max_digits=10, decimal_places=3)
+    productURL = models.URLField(max_length=2000)

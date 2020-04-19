@@ -2,7 +2,7 @@ import logging
 import requests
 
 from email.mime.image import MIMEImage
-from django.contrib.staticfiles.templatetags.staticfiles import static
+from django.templatetags.static import static
 from django.core.mail import EmailMultiAlternatives
 from django.conf import settings
 

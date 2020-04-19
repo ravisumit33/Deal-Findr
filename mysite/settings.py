@@ -11,15 +11,13 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import django_heroku
-import os
-#import json 
-#from google.cloud import kms_v1
+import os, sys
 import dj_database_url
 from credential_manager import decrypt
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
+sys.path.append(os.path.join(BASE_DIR, 'deal_findr'))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
@@ -183,4 +181,4 @@ try:
 except Exception as e:
     pass
 
-django_heroku.settings(locals())
+django_heroku.settings(locals(), logging=False)

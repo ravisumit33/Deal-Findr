@@ -1,11 +1,10 @@
-Django==2.1.10
-beautifulsoup4==4.7.1
-requests==2.21.0
-django-phonenumber-field==2.3.1
-phonenumbers==8.10.9
+Django
+beautifulsoup4
+requests
+requests-html
+django-phonenumber-field
+phonenumbers
 gunicorn
 django-heroku
-PyMySQL==0.9.3
-google-cloud-kms==1.1.0
 cryptography
 

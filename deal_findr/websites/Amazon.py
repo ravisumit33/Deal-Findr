@@ -1,36 +1,25 @@
-import bs4, requests
 import logging
 
 logger = logging.getLogger(__name__)
 
-def list_name(list):
-    if len(list) > 0:
-        return list[0].get_text().strip()
-    return ''
+class Amazon():
 
-def list_price(list):
-    if len(list) > 0:
-        return float(list[0].get_text().strip().replace(',', ''))
-    return float('inf')
-
-def getObject(productURL):
-    getPage = requests.get(productURL, headers={
-            "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.110 Safari/537.36"
-    })
-    getPage.raise_for_status()
-
-    item = bs4.BeautifulSoup(getPage.text, 'html.parser')
-    return item
+    def __init__(self):
+        self.page = None
  
-def getName(productURL):
-    item = getObject(productURL)
-    item_name = list_name(item.select('#productTitle'))
-    logger.info(str(item_name))
-    return str(item_name)
+    def format_price(self, content):
+        return float(content.text.strip()[2:].replace(',', ''))
 
-def getPrice(productURL):
-    item = getObject(productURL)
-    regular_price = list_price(item.select('#priceblock_ourprice'))
-    deal_price = list_price(item.select('#priceblock_dealprice'))
-    return min(regular_price, deal_price)
+    async def getName(self, productURL, web_util):
+        if self.page is None:
+            self.page = await web_util.getObject(productURL)
+        item_name = WebUtility.format_name(self.page.find('#productTitle')[0])
+        return item_name
+
+    async def getPrice(self, productURL, web_util):
+        if self.page is None:
+            self.page = await web_util.getObject(productURL)
+        regular_price = self.format_price(self.page.find('#priceblock_ourprice')[0])
+        deal_price = self.format_price(self.page.find('#priceblock_dealprice')[0])
+        return min(regular_price, deal_price)
 

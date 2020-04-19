@@ -16,40 +16,7 @@ class CustomUserChangeForm(UserChangeForm):
         model = models.CustomUser
         fields = ('username', 'email', 'first_name', 'last_name', 'phone',)
 
-class CustomerForm(forms.Form):
-    WEBSITE_CHOICES = (
-        ('Choose Website', 'Choose Website'),
-        ('Amazon', 'Amazon'),
-        ('Flipkart', 'Flipkart'),
-        ('Snapdeal', 'Snapdeal'),
-        ('Myntra', 'Myntra'),
-    )
-
-    website = forms.ChoiceField(
-        choices=WEBSITE_CHOICES,
-        initial={'Choose Website' : 'Choose Website'},
-        widget=forms.Select(
-            attrs={
-                'class' : 'selection-2'
-                }
-            )
-        )
-
-    budget = forms.IntegerField(
-            widget=forms.NumberInput(
-                attrs={
-                    'class' : 'input100',
-                    'placeholder' : 'Enter your budget'
-                    }
-                )
-            )
-
-    productURL =  forms.URLField(
-            widget=forms.URLInput(
-                attrs={
-                    'class' : 'input100',
-                    'placeholder' : 'Enter product URL'
-                    }
-                )
-            )
-    
+class CustomerForm(forms.ModelForm):
+    class Meta:
+        model = models.Deal
+        fields = ('website', 'budget', 'productURL',)

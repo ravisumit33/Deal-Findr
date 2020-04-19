@@ -1,44 +1,23 @@
-import bs4, requests
 import logging
 
 logger = logging.getLogger(__name__)
 
-def list_name(list):
-    if len(list) > 0:
-        return list[0].get_text().strip()
-    return ''
-
-def list_price(list):
-    if len(list) > 0:
-        return float(list[0].get_text().strip().replace(',', '')[1:])
-    return float('inf')
-
-
-def getObject(productURL):
-    getPage = requests.get(productURL, headers={
-            "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.110 Safari/537.36"
-    })
-    getPage.raise_for_status()
-
-    item = bs4.BeautifulSoup(getPage.text, 'html.parser')
-    return item
+class Myntra():
  
-def getName(productURL):
-    item = getObject(productURL)
-    f = open("m.html", "w")
-    f.write(item.prettify())
-    item_name = item.find_all(class_="pdp-name")
-    print(item_name)
-    logger.info(str(item_name))
-    return str(item_name)
+    def __init__(self):
+        self.page = None
 
-def getPrice(productURL):
-    item = getObject(productURL)
-    price = item.find("div", class_= "pdp-price-info")
-    logger.info(price)
-    return price
+    def format_price(self, content):
+        return float(content.text.strip()[3:].replace(',', ''))
 
+    async def getName(self, productURL, web_util):
+        if self.page is None:
+            self.page = await web_util.getObject(productURL)
+        item_name = web_util.format_name(self.page.find(".pdp-name")[0])
+        return item_name
 
-productURL = "https://www.myntra.com/jeans/roadster/roadster-time-travlr-men-black-skinny-fit-mid-rise-clean-look-stretchable-jeans/2425786/buy"
-print(getName(productURL))
-print(getPrice(productURL))
+    async def getPrice(self, productURL, web_util):
+        if self.page is None:
+            self.page = await web_util.getObject(productURL)
+        item_price = self.format_price(self.page.find(".pdp-price")[0])
+        return item_price

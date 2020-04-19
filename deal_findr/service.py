@@ -1,5 +1,6 @@
 import datetime, logging
-import os, sys, importlib
+import asyncio
+import os, importlib
 import bs4
 from urllib.request import urlopen
 
@@ -7,10 +8,6 @@ from django.utils import timezone
 from django.template import loader
 
 from .notification import send_sms, send_email
-
-dir_path = os.path.dirname(os.path.realpath(__file__))
-websites_path = os.path.join(dir_path, 'websites')
-sys.path.insert(0, websites_path)
 
 logger = logging.getLogger(__name__)
 
@@ -20,46 +17,59 @@ base_subject_pos = 'Go ahead and buy on %s!'
 base_subject_neg = 'Deal not found on %s'
 
 
-def serv_customer(first_name, mobNumber, email, website, budget, productURL):
+async def servCustomer(customer, deal):
     logger.info("Starting Customer Service")
-    price = float('inf')
-    logger.info(website)
-    website_module = importlib.import_module(website)
-    productName = website_module.getName(productURL)
+    logger.info(deal.website)
+
+    website_module = importlib.import_module('websites.' + deal.website)
+    website_class = getattr(website_module, deal.website)
+    website = website_class()
+    from websites.Base import WebUtility
+
+    web_util = WebUtility()
+    productName = await website.getName(deal.productURL, web_util)
     logger.info(productName)
+
     deadline = timezone.now() + datetime.timedelta(days=30)
     logger.info("Price monitoring started...")
-    while timezone.now() < deadline and  price > budget:
-        price = website_module.getPrice(productURL) 
+    price = float('inf')
+    while timezone.now() < deadline and  price > deal.budget:
+        price = await website.getPrice(deal.productURL, web_util) 
         logger.info(str(price))
+
+    await web_util.browser.close()
+    web_util.browser = None
+
     if(timezone.now() < deadline):
         context = {
-            'name' : first_name, 
+            'name' : customer.first_name, 
             'price' : int(price),
-            'productURL' : productURL,
+            'productURL' : deal.productURL,
             'productName' : productName,
             'img_name' : 'Gifts.gif',
         }
         html = loader.render_to_string('deal_findr/email_pos.html', context)
-        text = base_text_pos % (first_name, price)
-        subject = base_subject_pos % website
-        #send_sms(mobNumber, text)
-        send_email(email, subject, text, html)
+        text = base_text_pos % (customer.first_name, price)
+        subject = base_subject_pos % deal.website
+        #send_sms(customer.phone, text)
+        send_email(customer.email, subject, text, html)
     else:
-        text = base_text_neg % (first_name, price)
-        subject = base_subject_neg % (website)
+        text = base_text_neg % (customer.first_name, price)
+        subject = base_subject_neg % (deal.website)
         context = {
-            'name' : first_name, 
+            'name' : customer.first_name, 
             'price' : price,
-            'productURL' : productURL,
+            'productURL' : deal.productURL,
             'productName' : productName,
             'formURL' : '#' 
         }
         html = loader.render_to_string('deal_findr/email_neg.html', context)
-        send_sms(mobNumber, text)
-        send_email(email, subject, text, html)
+        send_sms(customer.phone, text)
+        send_email(customer.email, subject, text, html)
     
     logger.info("Exiting Customer Service")
 
 
+def serviceStart(customer, deal):
+    asyncio.run(servCustomer(customer, deal))
 

@@ -6,8 +6,10 @@ from django.shortcuts import render, redirect
 from django.urls import reverse, reverse_lazy
 from django.views import generic
 from django.contrib.auth.decorators import login_required
+
+from .models import CustomUser, Deal
 from .forms import CustomerForm, CustomUserCreationForm
-from .service import serv_customer
+from .service import serviceStart
 
 logger = logging.getLogger(__name__)
 
@@ -27,15 +29,14 @@ def FormView(request):
         form = CustomerForm(request.POST)
         logger.info("Form created")
         if form.is_valid():
-            first_name = request.user.first_name 
-            phone = request.user.phone.as_e164[3:]
-            email = request.user.email
-            website = form.cleaned_data['website']
-            budget = form.cleaned_data['budget']
-            productURL = form.cleaned_data['productURL']
-            logger.info("Creating thread")
-            thread1 = threading.Thread(target=serv_customer, args=(first_name, phone, email, website, budget, productURL,))
-            thread1.start()
+            customer = request.user
+            deal = form.save(commit=False)
+            deal.customer_id = customer.id
+            deal.save()
+            form.save_m2m()
+            logger.info("Creating service thread")
+            service_thread = threading.Thread(target=serviceStart, args=(customer, deal,))
+            service_thread.start()
             #thread1.join()
             # redirect to a new URL:
             logger.info('Redirecting...')
