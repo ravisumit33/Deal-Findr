@@ -18,7 +18,10 @@ class WebUtility():
                 'handleSIGINT': False,
                 'handleSIGTERM': False,
                 'handleSIGHUP': False,
-                'args': ['--no-sandbox']
+                'args': [
+                    '--no-sandbox',
+                    '--disable-setuid-sandbox'
+                ]
             })
             self.asession._browser = self.browser
         resp = await self.asession.get(productURL)
