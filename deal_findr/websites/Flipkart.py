@@ -1,9 +1,6 @@
-import asyncio
 import logging
 
 logger = logging.getLogger(__name__)
-
-from websites.Base import WebUtility
 
 class Flipkart():
 

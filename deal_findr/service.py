@@ -1,13 +1,12 @@
 import datetime, logging
 import asyncio
-import os, importlib
-import bs4
-from urllib.request import urlopen
+import importlib
 
 from django.utils import timezone
 from django.template import loader
 
 from .notification import send_sms, send_email
+from websites.Base import WebUtility
 
 logger = logging.getLogger(__name__)
 
@@ -24,7 +23,6 @@ async def servCustomer(customer, deal):
     website_module = importlib.import_module('websites.' + deal.website)
     website_class = getattr(website_module, deal.website)
     website = website_class()
-    from websites.Base import WebUtility
 
     web_util = WebUtility()
     productName = await website.getName(deal.productURL, web_util)

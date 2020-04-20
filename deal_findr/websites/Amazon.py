@@ -13,13 +13,16 @@ class Amazon():
     async def getName(self, productURL, web_util):
         if self.page is None:
             self.page = await web_util.getObject(productURL)
-        item_name = WebUtility.format_name(self.page.find('#productTitle')[0])
+        item_name = web_util.format_name(self.page.find('#productTitle')[0])
         return item_name
 
     async def getPrice(self, productURL, web_util):
         if self.page is None:
             self.page = await web_util.getObject(productURL)
         regular_price = self.format_price(self.page.find('#priceblock_ourprice')[0])
-        deal_price = self.format_price(self.page.find('#priceblock_dealprice')[0])
+        parsed_dlist = self.page.find('priceblock_dealprice')
+        deal_price = float('inf')
+        if len(parsed_dlist) > 0:
+            deal_price = self.format_price(parsed_dlist[0])
         return min(regular_price, deal_price)
 
