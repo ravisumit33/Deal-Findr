@@ -7,7 +7,9 @@ __pycache__/
 *~
 *.swp
 *.gz
-.gitignore
+*.swn
+*.swo
+
 .env
 mysite/local_settings.py
 credential_manager/credentials.json
