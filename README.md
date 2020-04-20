@@ -9,7 +9,7 @@ https://deal-findr-33.appspot.com/deal_findr/
 
 ## Features
 * Products from Amazon, Flipkart, Snapdeal or Myntra can be used.
-* Price monitoring for a month.
+* Price monitoring for a month(30 days).
 * Maximum of 5 products are allowed per wishlist.
 * Wishlist & Budget can be changed till deal is found.
 
