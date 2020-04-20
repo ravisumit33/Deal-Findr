@@ -8,7 +8,7 @@ from django.template import loader
 from .notification import send_sms, send_email
 from websites.Base import WebUtility
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("testlogger")
 
 base_text_pos = "\nHi %s,\nWe have found your deal.\nThings are in your budget now :)\nYou can buy your product in Rs.%d.\n\nThank you for using Deal_Findr"
 base_text_neg = 'Hi %s,\n\nWe could not find your deal :(\nPrice of your product is still Rs.%d.\n\nThank you for using Deal_Findr.'

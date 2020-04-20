@@ -7,5 +7,4 @@ urlpatterns = [
     path('form/', views.FormView, name='form'),
     path('accounts/signup/', views.SignUp.as_view(), name='signup'),
     path('accounts/', include('django.contrib.auth.urls')),
-#    path('ty/', views.ThanksView.as_view(), name='thanku'),
 ]

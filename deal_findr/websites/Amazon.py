@@ -1,7 +1,3 @@
-import logging
-
-logger = logging.getLogger(__name__)
-
 class Amazon():
 
     def __init__(self):

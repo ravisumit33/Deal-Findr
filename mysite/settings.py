@@ -6,11 +6,7 @@ from credential_manager import decrypt
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(os.path.join(BASE_DIR, 'deal_findr'))
 
-SECRET_KEY = os.environ['SECRET_KEY']
-
 DEBUG = False 
-
-ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [ 
     'deal_findr.apps.DealFindrConfig',
@@ -55,8 +51,6 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 AUTH_USER_MODEL = 'deal_findr.CustomUser'
 PHONENUMBER_DEFAULT_REGION = 'IN'
 
-DATABASES = { 'default' : dj_database_url.config()}
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -82,24 +76,20 @@ USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 
-STATIC_ROOT = 'static'
-STATIC_URL = '/static/'
-
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = decrypt.cred['EMAIL_HOST_USER'] 
 EMAIL_HOST_PASSWORD = decrypt.cred['EMAIL_HOST_PASSWD'] 
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
-
-
 LOGIN_URL = 'deal_findr:login'
 LOGIN_REDIRECT_URL = 'deal_findr:home'
 LOGOUT_REDIRECT_URL = 'deal_findr:home'
+
+django_heroku.settings(locals())
 
 try:
     from mysite.local_settings import *
 except Exception as e:
     pass
 
-django_heroku.settings(locals(), logging=False)

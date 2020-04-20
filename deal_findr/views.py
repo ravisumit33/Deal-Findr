@@ -2,16 +2,15 @@ import logging
 import threading
 
 from django.http import HttpResponseRedirect
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 from django.urls import reverse, reverse_lazy
 from django.views import generic
 from django.contrib.auth.decorators import login_required
 
-from .models import CustomUser, Deal
 from .forms import CustomerForm, CustomUserCreationForm
 from .service import serviceStart
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("testlogger")
 
 class SignUp(generic.CreateView):
     form_class = CustomUserCreationForm
@@ -28,6 +27,7 @@ def FormView(request):
         logger.info("Post method")
         form = CustomerForm(request.POST)
         logger.info("Form created")
+
         if form.is_valid():
             customer = request.user
             deal = form.save(commit=False)
@@ -37,7 +37,7 @@ def FormView(request):
             logger.info("Creating service thread")
             service_thread = threading.Thread(target=serviceStart, args=(customer, deal,))
             service_thread.start()
-            #thread1.join()
+
             # redirect to a new URL:
             logger.info('Redirecting...')
             return HttpResponseRedirect(reverse('deal_findr:home'))

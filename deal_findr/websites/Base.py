@@ -1,8 +1,5 @@
 from requests_html import AsyncHTMLSession
-import logging
 import pyppeteer
-
-logger = logging.getLogger(__name__)
 
 class WebUtility():
 
