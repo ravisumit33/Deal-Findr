@@ -18,6 +18,6 @@ from django.urls import include, path
 from django.views.generic.base import TemplateView
 
 urlpatterns = [
-        path('deal_findr/', include('deal_findr.urls')),
+        path('', include('deal_findr.urls')),
         path('admin/', admin.site.urls),
 ]
