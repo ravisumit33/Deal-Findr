@@ -6,7 +6,7 @@ __pycache__/
 *.pyc
 *~
 *.swp
-
+*.gz
 .gitignore
 .env
 mysite/local_settings.py
