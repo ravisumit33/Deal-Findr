@@ -1,4 +1,6 @@
 {% load static %}
+{% load myfilters %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -40,21 +42,21 @@
 				<div class="wrap-input100 input100-select">
 					{{ form.website.errors }}
 					<span class="label-input100">Website</span>
-					{{ form.website }}	
+					{{ form.website|addAttrs:'selection-2'}}	
 					<span class="focus-input100"></span>
 				</div>
 	               		
 				<div class="wrap-input100 validate-input" data-validate="Budget is required">
 					{{ form.budget.errors }}
 					<span class="label-input100">Your Budget</span>
-					{{ form.budget }}
+					{{ form.budget|addAttrs:'input100,Enter your budget'}}
 					<span class="focus-input100"></span>
 				</div>
 
 				<div class="wrap-input100 validate-input" data-validate = "Product URL is required">
 					{{ form.productURL.errors }}
 					<span class="label-input100">Product URL</span>
-					{{ form.productURL }}
+					{{ form.productURL|addAttrs:'input100,Enter product URL'}}
 					<img src="{% static 'deal_findr/images/add.png' %}" class="add" >
 					<span class="focus-input100"></span>
 				</div>
@@ -71,28 +73,6 @@
 						</button>
 					</div>
 				</div>
-
-			<!--	<script>
-					importScripts('https://pushpad.xyz/service-worker.js');
-					importScripts('https://pushpad.xyz/service-worker.js');
-					importScripts('https://pushpad.xyz/service-worker.js');
-					(function(p,u,s,h,x){p.pushpad=p.pushpad||function()
-						{
-							(p.pushpad.q=p.pushpad.q||[]).push(arguments)
-						};
-						h=u.getElementsByTagName('head')[0];
-						x=u.createElement('script');
-						x.async=1;x.src=s;h.appendChild(x);
-						}
-					)
-					(window,document,'https://pushpad.xyz/pushpad.js');
-					pushpad('init', 6641);
-					pushpad('widget');
-				</script>
-
-				<div id="pushpad-subscribe"><button id="notifications-button">Subscribe</button></div> 
-			-->
-
 			</form>
 		</div>
 	</div>
