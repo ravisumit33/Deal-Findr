@@ -22,7 +22,7 @@ class WebUtility():
             })
             self.asession._browser = self.browser
         resp = await self.asession.get(productURL)
-        assert resp.status_code == 200
+        resp.raise_for_status()
         await resp.html.arender()
         return resp.html
      

@@ -16,6 +16,35 @@ base_subject_pos = 'Go ahead and buy on %s!'
 base_subject_neg = 'Deal not found on %s'
 
 
+def notifyDealStatus(customer, deal, deal_found, price):
+    context = {
+        'name' : customer.first_name, 
+        'price' : int(price),
+        'productURL' : deal.productURL,
+        'productName' : productName,
+        'img_name' : 'Gifts.gif',
+    }
+    if deal_found:
+        context['img_name'] = 'Gifts.gif'
+        email_template = 'email_pos.html'
+        text_template = base_text_pos
+        subject_template = base_subject_pos
+    else:
+        context['formURL'] = '#'
+        email_template = 'email_neg.html'
+        text_template = base_text_neg
+        subject_template = base_subject_neg
+
+    html = loader.render_to_string('deal_findr/' + email_template, context)
+    text = text_template % (customer.first_name, price)
+    subject = subject_template % deal.website
+    #send_sms(customer.phone, text)
+    send_email(customer.email, subject, text, html)
+
+def notifyError(customer, deal):
+    logger.info("Error notified")
+    pass
+
 async def servCustomer(customer, deal):
     logger.info("Starting Customer Service")
     logger.info(deal.website)
@@ -25,46 +54,47 @@ async def servCustomer(customer, deal):
     website = website_class()
 
     web_util = WebUtility()
-    productName = await website.getName(deal.productURL, web_util)
+
+    try_count = 0
+    while try_count < 10:
+        try:
+            productName = await website.getName(deal.productURL, web_util)
+            break
+        except:
+           try_count += 1
+           await asyncio.sleep(5*60)
+
+    if try_count == 10:
+        logger.error("Unable to get product name")
+        notifyError(customer, deal)
+        return
+
     logger.info(productName)
 
     deadline = timezone.now() + datetime.timedelta(days=30)
     logger.info("Price monitoring started...")
     price = float('inf')
     while timezone.now() < deadline and  price > deal.budget:
-        price = await website.getPrice(deal.productURL, web_util) 
-        logger.info(str(price))
+        try:
+            price = await website.getPrice(deal.productURL, web_util) 
+            logger.info(str(price))
+        except:
+            pass
+        await asyncio.sleep(5*60)
 
     await web_util.browser.close()
     web_util.browser = None
 
-    if(timezone.now() < deadline):
-        context = {
-            'name' : customer.first_name, 
-            'price' : int(price),
-            'productURL' : deal.productURL,
-            'productName' : productName,
-            'img_name' : 'Gifts.gif',
-        }
-        html = loader.render_to_string('deal_findr/email_pos.html', context)
-        text = base_text_pos % (customer.first_name, price)
-        subject = base_subject_pos % deal.website
-        #send_sms(customer.phone, text)
-        send_email(customer.email, subject, text, html)
-    else:
-        text = base_text_neg % (customer.first_name, price)
-        subject = base_subject_neg % (deal.website)
-        context = {
-            'name' : customer.first_name, 
-            'price' : price,
-            'productURL' : deal.productURL,
-            'productName' : productName,
-            'formURL' : '#' 
-        }
-        html = loader.render_to_string('deal_findr/email_neg.html', context)
-        send_sms(customer.phone, text)
-        send_email(customer.email, subject, text, html)
+    if price == float('inf'):
+        logger.error("Unable to get product error")
+        notifyError(customer, deal)
+        return
     
+    if(timezone.now() < deadline):
+        notifyDealStatus(customer, deal, True, price)
+    else:
+        notifyDealStatus(customer, deal, False, price)
+
     logger.info("Exiting Customer Service")
 
 
