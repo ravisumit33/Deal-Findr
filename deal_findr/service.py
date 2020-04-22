@@ -16,7 +16,7 @@ base_subject_pos = 'Go ahead and buy on %s!'
 base_subject_neg = 'Deal not found on %s'
 
 
-def notifyDealStatus(customer, deal, deal_found, price):
+def notifyDealStatus(customer, deal, deal_found, price, productName):
     context = {
         'name' : customer.first_name, 
         'price' : int(price),
@@ -74,10 +74,12 @@ async def servCustomer(customer, deal):
     deadline = timezone.now() + datetime.timedelta(days=30)
     logger.info("Price monitoring started...")
     price = float('inf')
-    while timezone.now() < deadline and  price > deal.budget:
+    while timezone.now() < deadline:
         try:
             price = await website.getPrice(deal.productURL, web_util) 
             logger.info(str(price))
+            if price <= deal.budget:
+                break
         except:
             pass
         await asyncio.sleep(5*60)
@@ -91,9 +93,9 @@ async def servCustomer(customer, deal):
         return
     
     if(timezone.now() < deadline):
-        notifyDealStatus(customer, deal, True, price)
+        notifyDealStatus(customer, deal, True, price, productName)
     else:
-        notifyDealStatus(customer, deal, False, price)
+        notifyDealStatus(customer, deal, False, price, productName)
 
     logger.info("Exiting Customer Service")
 
