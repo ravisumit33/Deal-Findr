@@ -1,0 +1,15 @@
+.inlineFormBox{
+    height: 23px;
+}
+
+.inlineFormInput{
+    width: 117px;
+}
+
+.inlineLogin{
+    font-size: 13px;
+}
+
+#forgotPwd{
+    margin-left: 22px;
+}

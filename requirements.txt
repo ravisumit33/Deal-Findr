@@ -7,4 +7,4 @@ phonenumbers
 gunicorn
 django-heroku
 cryptography
-
+django-widget-tweaks

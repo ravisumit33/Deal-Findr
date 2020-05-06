@@ -11,6 +11,7 @@ DEBUG = False
 INSTALLED_APPS = [ 
     'deal_findr.apps.DealFindrConfig',
     'phonenumber_field',
+    'widget_tweaks',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

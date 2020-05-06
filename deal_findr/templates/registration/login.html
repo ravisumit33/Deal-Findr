@@ -1,123 +1,91 @@
+{% extends "base.html" %}
+
 {% load static %}
-{% load myfilters %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	<title>Login</title>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-<!--===============================================================================================-->
-	<link rel="icon" type="image/png" href="{% static 'deal_findr/images/icons/favicon.ico' %}"/>
-<!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="{% static 'deal_findr/vendor/bootstrap/css/bootstrap.min.css' %}">
-<!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="{% static 'deal_findr/fonts/font-awesome-4.7.0/css/font-awesome.min.css' %}">
-<!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="{% static 'deal_findr/fonts/iconic/css/material-design-iconic-font.min.css' %}">
-<!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="{% static 'deal_findr/vendor/animate/animate.css' %}">
-<!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="{% static 'deal_findr/vendor/css-hamburgers/hamburgers.min.css' %}">
-<!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="{% static 'deal_findr/vendor/animsition/css/animsition.min.css' %}">
-<!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="{% static 'deal_findr/vendor/select2/select2.min.css' %}">
-<!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="{% static 'deal_findr/vendor/daterangepicker/daterangepicker.css' %}">
-<!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="{% static 'deal_findr/css/util.css' %}">
-	<link rel="stylesheet" type="text/css" href="{% static 'deal_findr/css/main_login.css' %}">
-<!--===============================================================================================-->
-</head>
-<body>
-	
-	<div class="limiter">
-		<div class="container-login100" style="background-image: url('{% static 'deal_findr/images/login_bg.jpg' %}');">
-			<div class="wrap-login100 p-l-55 p-r-55 p-t-65 p-b-54">
-				<form class="login100-form validate-form" method="post">
-					{% csrf_token %}
-					<span class="login100-form-title p-b-49">
-						Login
-					</span>
-					{{ form.non_field_errors }}
-					<div class="wrap-input100 validate-input m-b-23" data-validate = "Username is required">
-						{{ form.username.errors }}
-						<span class="label-input100">Username</span>
-						{{ form.username|addAttrs:'input100,Enter username' }}
-						<span class="focus-input100" data-symbol="&#xf206;"></span>
-					</div>
+{% load widget_tweaks %}
 
-					<div class="wrap-input100 validate-input" data-validate="Password is required">
-						{{ form.password.errors }}
-						<span class="label-input100">Password</span>
-						{{ form.password|addAttrs:'input100,Enter password' }}
-						<span class="focus-input100" data-symbol="&#xf190;"></span>
-					</div>
-					
-					<div class="text-right p-t-8 p-b-31">
-						<a href="{% url 'deal_findr:password_change' %}">
-							Forgot password?
-						</a>
-					</div>
-					
-					<div class="container-login100-form-btn">
-						<div class="wrap-login100-form-btn">
-							<div class="login100-form-bgbtn"></div>
-							<button class="login100-form-btn">
-								Login
-							</button>
-						</div>
-					</div>
-					<div class="flex-col-c p-t-30">
-						<a href="{% url 'deal_findr:signup' %}" class="txt2">
-							Sign Up
-						</a>
-					</div>
-	
-					<div class="txt1 text-center p-t-20 p-b-20">
-						<span>
-							Or Sign Up Using
-						</span>
-					</div>
 
-					<div class="flex-c-m">
-						<a href="#" class="login100-social-item bg1">
-							<i class="fa fa-facebook"></i>
-						</a>
+{% block css %}
+	<link rel="stylesheet" type="text/css" href="{% static 'deal_findr/css/login.css' %}">
+{% endblock %}
 
-						<a href="#" class="login100-social-item bg2">
-							<i class="fa fa-twitter"></i>
-						</a>
+{% block content %}
 
-						<a href="#" class="login100-social-item bg3">
-							<i class="fa fa-google"></i>
-						</a>
-					</div>
+<!-- Navigation -->
+<header> 
+    <!--Navbar-->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
 
-				</form>
-			</div>
-		</div>
-	</div>
-	
+      <!-- Navbar brand -->
+      <a class="navbar-brand" href="#">
+          Deal Findr
+      </a>
 
-	<div id="dropDownSelect1"></div>
-<!--===============================================================================================-->
-	<script src="{% static 'deal_findr/vendor/jquery/jquery-3.2.1.min.js' %}"></script>
-<!--===============================================================================================-->
-	<script src="{% static 'deal_findr/vendor/animsition/js/animsition.min.js' %}"></script>
-<!--===============================================================================================-->
-	<script src="{% static 'deal_findr/vendor/bootstrap/js/popper.js' %}"></script>
-	<script src="{% static 'deal_findr/vendor/bootstrap/js/bootstrap.min.js' %}"></script>
-<!--===============================================================================================-->
-	<script src="{% static 'deal_findr/vendor/select2/select2.min.js' %}"></script>
-<!--===============================================================================================-->
-	<script src="{% static 'deal_findr/vendor/daterangepicker/moment.min.js' %}"></script>
-	<script src="{% static 'deal_findr/vendor/daterangepicker/daterangepicker.js' %}"></script>
-<!--===============================================================================================-->
-	<script src="{% static 'deal_findr/vendor/countdowntime/countdowntime.js' %}"></script>
-<!--===============================================================================================-->
-	<script src="{% static 'deal_findr/js/main_login.js' %}"></script>
+      <!-- Collapse button -->
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarContent"
+        aria-controls="basicExampleNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
 
-	
-</body>
-</html>
+      <!-- Collapsible content -->
+      <div class="collapse navbar-collapse" id="navbarContent">
+
+        <!-- Links -->
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="#">Home
+              <span class="sr-only">(current)</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Features</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Pricing</a>
+          </li>
+          <li class="nav-item">
+              <a class="nav-link" href="#">Downloads</a>
+          </li>
+        </ul>
+        <!-- Links -->
+
+        <form method="post">
+            {% csrf_token %}
+            {% render_field form.non_field_errors class="alert alert danger" role="alert" %}
+            <div class="form-inline">
+                <label class="sr-only" for="inlineFormUsername">Username</label>
+                {% render_field form.username class="form-control-sm mr-sm-2 inlineFormBox inlineFormInput" id="inlineFormUsername" placeholder="Username"%}
+                <label class="sr-only" for="inlineFormPassword">Password</label>
+                {% render_field form.password class="form-control-sm mr-sm-3 inlineFormBox inlineFormInput" id="inlineFormPassword" placeholder="Password"%}
+                <button type="submit" class="btn-sm btn-success py-0 inlineFormBox inlineLogin">Login</button>
+            </div>
+            <div class="form-inline">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="inlineFormChkBx">
+                    <label class="form-check-label" for="inlineFormChkBx"> 
+                        <small class="form-text text-muted">Remember me</small>
+                    </label>
+                </div>
+                <div id="forgotPwd">
+                    <a href="{% url 'deal_findr:password_change' %}">
+                        <small class="form-text text-muted">Forgot password?</small>
+                    </a>
+                </div>
+            </div>
+        </form>    
+        <!-- Collapsible content -->
+    </nav>
+    <!--/.Navbar-->
+</header>
+
+<!-- Main layout -->
+<main> </main>
+
+<!-- Footer -->
+<footer> </footer>
+
+{% endblock %}
+
+
+
+
+
