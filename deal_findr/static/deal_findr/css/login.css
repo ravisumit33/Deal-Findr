@@ -13,3 +13,13 @@
 #forgotPwd{
     margin-left: 22px;
 }
+
+#inlineFormAlert{
+    position: absolute; 
+    z-index: 1; 
+    margin-right: 15px;
+}
+
+.alertText{
+    display: block;
+}
