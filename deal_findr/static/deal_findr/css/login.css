@@ -15,9 +15,7 @@
 }
 
 #inlineFormAlert{
-    position: absolute; 
-    z-index: 1; 
-    margin-right: 15px;
+    z-index: 999; 
 }
 
 .alertText{
