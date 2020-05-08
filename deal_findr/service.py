@@ -92,12 +92,6 @@ async def servCustomer(customer, deal):
     await web_util.browser.close()
     web_util.browser = None
 
-    if price == float('inf'):
-        logger.error("Unable to get product error")
-        notifyError(customer, deal)
-        models.Deal.objects.filter(id=deal.id).delete()
-        return
-
     if deal_done:
         notifyDealStatus(customer, deal, True, price, productName)
     
