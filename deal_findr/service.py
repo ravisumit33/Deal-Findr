@@ -56,7 +56,7 @@ async def servCustomer(customer, deal):
     web_util = WebUtility()
 
     try_count = 0
-    while try_count < 10:
+    while try_count < 5:
         try:
             productName = await website.getName(deal.productURL, web_util)
             break
@@ -64,25 +64,26 @@ async def servCustomer(customer, deal):
            try_count += 1
            await asyncio.sleep(5*60)
 
-    if try_count == 10:
+    if try_count == 5:
         logger.error("Unable to get product name")
         notifyError(customer, deal)
         return
 
     logger.info(productName)
 
-    deadline = timezone.now() + datetime.timedelta(days=30)
+    #deadline = timezone.now() + datetime.timedelta(days=30)
     logger.info("Price monitoring started...")
     price = float('inf')
-    while timezone.now() < deadline:
-        try:
-            price = await website.getPrice(deal.productURL, web_util) 
-            logger.info(str(price))
-            if price <= deal.budget:
-                break
-        except:
-            pass
-        await asyncio.sleep(5*60)
+    #while timezone.now() < deadline:
+    try:
+        price = await website.getPrice(deal.productURL, web_util) 
+        logger.info(str(price))
+        if price <= deal.budget:
+            notifyDealStatus(customer, deal, True, price, productName)
+            break
+    except:
+        pass
+    #await asyncio.sleep(5*60)
 
     await web_util.browser.close()
     web_util.browser = None
@@ -92,10 +93,10 @@ async def servCustomer(customer, deal):
         notifyError(customer, deal)
         return
     
-    if(timezone.now() < deadline):
-        notifyDealStatus(customer, deal, True, price, productName)
-    else:
-        notifyDealStatus(customer, deal, False, price, productName)
+    #if(timezone.now() < deadline):
+    #    notifyDealStatus(customer, deal, True, price, productName)
+    #else:
+    #    notifyDealStatus(customer, deal, False, price, productName)
 
     logger.info("Exiting Customer Service")
 

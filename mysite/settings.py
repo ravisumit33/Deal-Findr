@@ -11,6 +11,7 @@ DEBUG = False
 INSTALLED_APPS = [ 
     'deal_findr.apps.DealFindrConfig',
     'phonenumber_field',
+    'django_crontab',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -27,6 +28,10 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
+
+CRONJOBS = [
+    ('*/10 * * * *', 'myapp.cron.my_cron_job')
 ]
 
 DATABASES = {

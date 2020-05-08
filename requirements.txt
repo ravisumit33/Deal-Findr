@@ -7,4 +7,5 @@ phonenumbers
 gunicorn
 django-heroku
 cryptography
+django-crontab
 
