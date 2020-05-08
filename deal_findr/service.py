@@ -102,8 +102,8 @@ async def servCustomer(customer, deal):
         notifyDealStatus(customer, deal, True, price, productName)
     
     if(timezone.now() > deal.created_at + datetime.timedelta(days=30)):
-        models.Deal.objects.filter(id=deal.id).delete()
         notifyDealStatus(customer, deal, False, price, productName)
+        models.Deal.objects.filter(id=deal.id).delete()
 
     logger.info("Exiting Customer Service")
 
