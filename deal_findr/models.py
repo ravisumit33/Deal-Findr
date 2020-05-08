@@ -29,5 +29,5 @@ class Deal(models.Model):
     )
     budget = models.DecimalField(max_digits=10, decimal_places=3)
     productURL = models.URLField(max_length=2000)
-    productName = models.CharField(max_length=255)
+    productName = models.CharField(max_length=255, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)

@@ -7,6 +7,7 @@ from django.template import loader
 
 from .notification import send_sms, send_email
 from websites.Base import WebUtility
+from deal_findr import models
 
 logger = logging.getLogger("testlogger")
 
@@ -56,17 +57,20 @@ async def servCustomer(customer, deal):
     web_util = WebUtility()
 
     try_count = 0
-    while try_count < 5:
-        try:
-            productName = await website.getName(deal.productURL, web_util)
-            break
-        except:
-           try_count += 1
-           await asyncio.sleep(5*60)
+    if deal.productName == '': 
+        while try_count < 5:
+            try:
+                productName = await website.getName(deal.productURL, web_util)
+                models.Deal.objects.filter(id=deal.id).update(productName=productName)
+                break
+            except:
+               try_count += 1
+               await asyncio.sleep(60)
 
     if try_count == 5:
         logger.error("Unable to get product name")
         notifyError(customer, deal)
+        models.Deal.objects.filter(id=deal.id).delete()
         return
 
     logger.info(productName)
@@ -74,12 +78,14 @@ async def servCustomer(customer, deal):
     #deadline = timezone.now() + datetime.timedelta(days=30)
     logger.info("Price monitoring started...")
     price = float('inf')
+    deal_done = False
     #while timezone.now() < deadline:
     try:
         price = await website.getPrice(deal.productURL, web_util) 
         logger.info(str(price))
         if price <= deal.budget:
-            notifyDealStatus(customer, deal, True, price, productName)
+            deal_done = True
+            break
     except:
         pass
     #await asyncio.sleep(5*60)
@@ -90,12 +96,15 @@ async def servCustomer(customer, deal):
     if price == float('inf'):
         logger.error("Unable to get product error")
         notifyError(customer, deal)
+        models.Deal.objects.filter(id=deal.id).delete()
         return
+
+    if deal_done:
+        notifyDealStatus(customer, deal, True, price, productName)
     
-    #if(timezone.now() < deadline):
-    #    notifyDealStatus(customer, deal, True, price, productName)
-    #else:
-    #    notifyDealStatus(customer, deal, False, price, productName)
+    if(timezone.now() > deal.created_at + datetime.timedelta(days=30)):
+        models.Deal.objects.filter(id=deal.id).delete()
+        notifyDealStatus(customer, deal, False, price, productName)
 
     logger.info("Exiting Customer Service")
 
