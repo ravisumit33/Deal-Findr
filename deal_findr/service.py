@@ -80,7 +80,6 @@ async def servCustomer(customer, deal):
         logger.info(str(price))
         if price <= deal.budget:
             notifyDealStatus(customer, deal, True, price, productName)
-            break
     except:
         pass
     #await asyncio.sleep(5*60)
