@@ -12,6 +12,7 @@ INSTALLED_APPS = [
     'deal_findr.apps.DealFindrConfig',
     'phonenumber_field',
     'django_crontab',
+    'widget_tweaks',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

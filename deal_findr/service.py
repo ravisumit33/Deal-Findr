@@ -57,6 +57,7 @@ async def servCustomer(customer, deal):
     web_util = WebUtility()
 
     try_count = 0
+
     if deal.productName == '': 
         while try_count < 5:
             try:
@@ -78,6 +79,7 @@ async def servCustomer(customer, deal):
     #deadline = timezone.now() + datetime.timedelta(days=30)
     logger.info("Price monitoring started...")
     price = float('inf')
+
     deal_done = False
     #while timezone.now() < deadline:
     try:
