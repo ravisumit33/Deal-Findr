@@ -1,5 +1,11 @@
 body{
     position: relative;
+    background-image: url('/static/deal_findr/images/background.jpg');
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+    background-color: #464646;
 }
 
 .bgImage{
@@ -7,9 +13,8 @@ body{
     position:absolute;
     top:0;
     z-index:-1;
-    width:100%;
-    height:100%;
     opacity:0.5;
+    max-height:100%;
 }
 
 img.blur{
@@ -83,7 +88,6 @@ img.blur{
 
 .card-deck .card{
     background: #ccffff;
-    height: 350px;
 }
 
 .card-img-top{
@@ -98,15 +102,11 @@ img.blur{
     margin-top: 52.6px;
 }
 
-#Pricing .container{
-    height: 390px;
-}
-
 #Free{
     background: rgb(204,255,255,0.5);
 }
 
 footer{
-    height: 185px;
     background: rgba(0,0,0,0.5);
 }
+
