@@ -1,0 +1,41 @@
+html, body{
+    height: 100%;
+}
+
+body{
+    background: url("/static/deal_findr/images/jumbotron_background.a4e15202a439.jpg") no-repeat center center;
+    background-size: cover;
+}
+
+.jumbotron{
+    padding-top: 5%;
+    padding-bottom: 50%;
+}
+
+.inlineFormBox{
+    height: 23px;
+}
+
+.inlineFormInput{
+    width: 117px;
+}
+
+.inlineLogin{
+    font-size: 13px;
+}
+
+#forgotPwd{
+    margin-left: 22px;
+}
+
+.FormAlert{
+    z-index: 999; 
+}
+
+.alertText{
+    display: inline-block;
+}
+
+.alert-dismissible .close{
+    position: relative;
+}

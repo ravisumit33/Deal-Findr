@@ -62,7 +62,7 @@ async def servCustomer(customer, deal):
             break
         except:
            try_count += 1
-           await asyncio.sleep(5*60)
+           await asyncio.sleep(10)
 
     if try_count == 10:
         logger.error("Unable to get product name")
@@ -82,13 +82,13 @@ async def servCustomer(customer, deal):
                 break
         except:
             pass
-        await asyncio.sleep(5*60)
+        await asyncio.sleep(10)
 
     await web_util.browser.close()
     web_util.browser = None
 
     if price == float('inf'):
-        logger.error("Unable to get product error")
+        logger.error("Unable to get product price")
         notifyError(customer, deal)
         return
     
