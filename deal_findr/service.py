@@ -1,6 +1,7 @@
 import datetime, logging
 import asyncio
 import importlib
+from channels.db import database_sync_to_async
 
 from django.utils import timezone
 from django.template import loader
@@ -49,6 +50,7 @@ def notifyError(customer, deal):
 async def servCustomer(customer, deal):
     logger.info("Starting Customer Service")
     logger.info(deal.website)
+    logger.info(deal.budget)
 
     website_module = importlib.import_module('websites.' + deal.website)
     website_class = getattr(website_module, deal.website)
@@ -62,7 +64,8 @@ async def servCustomer(customer, deal):
         while try_count < 5:
             try:
                 productName = await website.getName(deal.productURL, web_util)
-                models.Deal.objects.filter(id=deal.id).update(productName=productName)
+                obj = await database_sync_to_async(models.Deal.objects.filter)(id=deal.id)
+                await database_sync_to_async(obj.update)(productName=productName)
                 break
             except:
                try_count += 1
@@ -71,7 +74,8 @@ async def servCustomer(customer, deal):
     if try_count == 5:
         logger.error("Unable to get product name")
         notifyError(customer, deal)
-        models.Deal.objects.filter(id=deal.id).delete()
+        obj = await database_sync_to_async(models.Deal.objects.filter)(id=deal.id)
+        await database_sync_to_async(obj.delete)()
         return
 
     logger.info(productName)
@@ -99,7 +103,8 @@ async def servCustomer(customer, deal):
     
     if(timezone.now() > deal.created_at + datetime.timedelta(days=30)):
         notifyDealStatus(customer, deal, False, price, productName)
-        models.Deal.objects.filter(id=deal.id).delete()
+        obj = await database_sync_to_async(models.Deal.objects.filter)(id=deal.id)
+        await database_sync_to_async(obj.delete)()
 
     logger.info("Exiting Customer Service")
 

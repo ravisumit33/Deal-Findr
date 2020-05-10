@@ -11,6 +11,7 @@ DEBUG = False
 INSTALLED_APPS = [ 
     'deal_findr.apps.DealFindrConfig',
     'phonenumber_field',
+    'channels',
     'django_crontab',
     'widget_tweaks',
     'django.contrib.admin',
@@ -32,7 +33,7 @@ MIDDLEWARE = [
 ]
 
 CRONJOBS = [
-    ('*/10 * * * *', 'myapp.cron.my_cron_job')
+    ('*/2 * * * *', 'deal_findr.cron.my_cron_job', '>> cron.log')
 ]
 
 DATABASES = {
@@ -61,6 +62,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'mysite.wsgi.application'
+ASGI_APPLICATION = "mysite.routing.application"
 AUTH_USER_MODEL = 'deal_findr.CustomUser'
 PHONENUMBER_DEFAULT_REGION = 'IN'
 
