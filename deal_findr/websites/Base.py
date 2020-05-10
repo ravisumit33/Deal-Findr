@@ -23,7 +23,7 @@ class WebUtility():
             self.asession._browser = self.browser
         resp = await self.asession.get(productURL)
         resp.raise_for_status()
-        await resp.html.arender()
+        await resp.html.arender(timeout=0)
         return resp.html
      
     def format_name(self, content):

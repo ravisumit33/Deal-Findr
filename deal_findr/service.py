@@ -18,12 +18,12 @@ base_subject_pos = 'Go ahead and buy on %s!'
 base_subject_neg = 'Deal not found on %s'
 
 
-def notifyDealStatus(customer, deal, deal_found, price, productName):
+def notifyDealStatus(customer, deal, deal_found, price):
     context = {
         'name' : customer.first_name, 
         'price' : int(price),
         'productURL' : deal.productURL,
-        'productName' : productName,
+        'productName' : deal.productName,
         'img_name' : 'Gifts.gif',
     }
     if deal_found:
@@ -68,8 +68,8 @@ async def servCustomer(customer, deal):
                 await database_sync_to_async(obj.update)(productName=productName)
                 break
             except:
-               try_count += 1
-               await asyncio.sleep(60)
+                try_count += 1
+                await asyncio.sleep(5)
 
     if try_count == 5:
         logger.error("Unable to get product name")
@@ -78,7 +78,7 @@ async def servCustomer(customer, deal):
         await database_sync_to_async(obj.delete)()
         return
 
-    logger.info(productName)
+    logger.info(deal.productName)
 
     #deadline = timezone.now() + datetime.timedelta(days=30)
     logger.info("Price monitoring started...")
@@ -99,10 +99,10 @@ async def servCustomer(customer, deal):
     web_util.browser = None
 
     if deal_done:
-        notifyDealStatus(customer, deal, True, price, productName)
+        notifyDealStatus(customer, deal, True, price)
     
     if(timezone.now() > deal.created_at + datetime.timedelta(days=30)):
-        notifyDealStatus(customer, deal, False, price, productName)
+        notifyDealStatus(customer, deal, False, price)
         obj = await database_sync_to_async(models.Deal.objects.filter)(id=deal.id)
         await database_sync_to_async(obj.delete)()
 

@@ -34,10 +34,10 @@ def FormView(request):
             deal.customer_id = customer.id
             deal.save()
             form.save_m2m()
-            '''            logger.info("Creating service thread")
+            ''' logger.info("Creating service thread")
             service_thread = threading.Thread(target=serviceStart, args=(customer, deal,))
             service_thread.daemon = True
-            service_thread.start() '''
+            service_thread.start()'''
 
             # redirect to a new URL:
             logger.info('Redirecting...')
