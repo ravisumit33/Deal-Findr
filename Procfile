@@ -1,2 +1,2 @@
 web: gunicorn mysite.wsgi
-clock: python clock.py
+clock: python manage.py run_cron
