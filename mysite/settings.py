@@ -5,6 +5,7 @@ from credential_manager import decrypt
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(os.path.join(BASE_DIR, 'deal_findr'))
+sys.path.append(os.path.join(BASE_DIR, 'mysite'))
 
 DEBUG = False 
 
@@ -33,7 +34,7 @@ MIDDLEWARE = [
 ]
 
 CRONJOBS = [
-    ('*/2 * * * *', 'deal_findr.cron.my_cron_job', '>> cron.log')
+    ('*/2 * * * *', 'deal_findr.cron.my_cron_job', '>> /tmp/cron.log 2>&1')
 ]
 
 DATABASES = {
@@ -42,6 +43,7 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
+
 
 ROOT_URLCONF = 'mysite.urls'
 
@@ -107,4 +109,3 @@ try:
     from mysite.local_settings import *
 except Exception as e:
     pass
-
