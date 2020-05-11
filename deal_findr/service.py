@@ -1,12 +1,14 @@
 import datetime, logging
 import asyncio
 import importlib
+from channels.db import database_sync_to_async
 
 from django.utils import timezone
 from django.template import loader
 
 from .notification import send_sms, send_email
 from websites.Base import WebUtility
+from deal_findr import models
 
 logger = logging.getLogger("testlogger")
 
@@ -16,12 +18,12 @@ base_subject_pos = 'Go ahead and buy on %s!'
 base_subject_neg = 'Deal not found on %s'
 
 
-def notifyDealStatus(customer, deal, deal_found, price, productName):
+def notifyDealStatus(customer, deal, deal_found, price):
     context = {
         'name' : customer.first_name, 
         'price' : int(price),
         'productURL' : deal.productURL,
-        'productName' : productName,
+        'productName' : deal.productName,
         'img_name' : 'Gifts.gif',
     }
     if deal_found:
@@ -48,6 +50,7 @@ def notifyError(customer, deal):
 async def servCustomer(customer, deal):
     logger.info("Starting Customer Service")
     logger.info(deal.website)
+    logger.info(deal.budget)
 
     website_module = importlib.import_module('websites.' + deal.website)
     website_class = getattr(website_module, deal.website)
@@ -56,46 +59,52 @@ async def servCustomer(customer, deal):
     web_util = WebUtility()
 
     try_count = 0
-    while try_count < 10:
-        try:
-            productName = await website.getName(deal.productURL, web_util)
-            break
-        except:
-           try_count += 1
-           await asyncio.sleep(10)
 
-    if try_count == 10:
+    if deal.productName == '': 
+        while try_count < 5:
+            try:
+                productName = await website.getName(deal.productURL, web_util)
+                obj = await database_sync_to_async(models.Deal.objects.filter)(id=deal.id)
+                await database_sync_to_async(obj.update)(productName=productName)
+                break
+            except:
+                try_count += 1
+                await asyncio.sleep(5)
+
+    if try_count == 5:
         logger.error("Unable to get product name")
         notifyError(customer, deal)
+        obj = await database_sync_to_async(models.Deal.objects.filter)(id=deal.id)
+        await database_sync_to_async(obj.delete)()
         return
 
-    logger.info(productName)
+    logger.info(deal.productName)
 
-    deadline = timezone.now() + datetime.timedelta(days=30)
+    #deadline = timezone.now() + datetime.timedelta(days=30)
     logger.info("Price monitoring started...")
     price = float('inf')
-    while timezone.now() < deadline:
-        try:
-            price = await website.getPrice(deal.productURL, web_util) 
-            logger.info(str(price))
-            if price <= deal.budget:
-                break
-        except:
-            pass
-        await asyncio.sleep(10)
+
+    deal_done = False
+    #while timezone.now() < deadline:
+    try:
+        price = await website.getPrice(deal.productURL, web_util) 
+        logger.info(str(price))
+        if price <= deal.budget:
+            deal_done = True
+    except:
+        pass
+    #await asyncio.sleep(5*60)
 
     await web_util.browser.close()
     web_util.browser = None
 
-    if price == float('inf'):
-        logger.error("Unable to get product price")
-        notifyError(customer, deal)
-        return
+    if deal_done:
+        notifyDealStatus(customer, deal, True, price)
     
-    if(timezone.now() < deadline):
-        notifyDealStatus(customer, deal, True, price, productName)
-    else:
-        notifyDealStatus(customer, deal, False, price, productName)
+    if(timezone.now() > deal.created_at + datetime.timedelta(days=30)):
+        notifyDealStatus(customer, deal, False, price)
+        obj = await database_sync_to_async(models.Deal.objects.filter)(id=deal.id)
+        await database_sync_to_async(obj.delete)()
 
     logger.info("Exiting Customer Service")
 

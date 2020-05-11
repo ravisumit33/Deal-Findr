@@ -5,12 +5,15 @@ from credential_manager import decrypt
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(os.path.join(BASE_DIR, 'deal_findr'))
+sys.path.append(os.path.join(BASE_DIR, 'mysite'))
 
 DEBUG = False 
 
 INSTALLED_APPS = [ 
     'deal_findr.apps.DealFindrConfig',
     'phonenumber_field',
+    'channels',
+    'django_crontab',
     'widget_tweaks',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -30,12 +33,17 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+CRONJOBS = [
+    ('*/2 * * * *', 'deal_findr.cron.my_cron_job', '>> /tmp/cron.log 2>&1')
+]
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
+
 
 ROOT_URLCONF = 'mysite.urls'
 
@@ -56,6 +64,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'mysite.wsgi.application'
+ASGI_APPLICATION = "mysite.routing.application"
 AUTH_USER_MODEL = 'deal_findr.CustomUser'
 PHONENUMBER_DEFAULT_REGION = 'IN'
 
@@ -100,4 +109,3 @@ try:
     from mysite.local_settings import *
 except Exception as e:
     pass
-
