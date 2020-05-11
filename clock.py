@@ -1,6 +1,5 @@
 from apscheduler.schedulers.blocking import BlockingScheduler
 from deal_findr.cron import my_cron_job
-import subprocess
 
 def clock_fun():
 	sched = BlockingScheduler()
