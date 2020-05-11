@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from .clock import clock_fun
+from clock import clock_fun
 
 
 class Command(BaseCommand):
