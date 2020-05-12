@@ -62,14 +62,14 @@ async def servCustomer(customer, deal):
 
     if deal.productName == '': 
         while try_count < 5:
-            try:
-                productName = await website.getName(deal.productURL, web_util)
-                obj = await database_sync_to_async(models.Deal.objects.filter)(id=deal.id)
-                await database_sync_to_async(obj.update)(productName=productName)
-                break
-            except:
-                try_count += 1
-                await asyncio.sleep(5)
+            #try:
+            productName = await website.getName(deal.productURL, web_util)
+            obj = await database_sync_to_async(models.Deal.objects.filter)(id=deal.id)
+            await database_sync_to_async(obj.update)(productName=productName)
+            break
+            #except:
+            try_count += 1
+            await asyncio.sleep(1*60)
 
     if try_count == 5:
         logger.error("Unable to get product name")
