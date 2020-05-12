@@ -100,6 +100,8 @@ async def servCustomer(customer, deal):
 
     if deal_done:
         notifyDealStatus(customer, deal, True, price)
+        obj = await database_sync_to_async(models.Deal.objects.filter)(id=deal.id)
+        await database_sync_to_async(obj.delete)()
     
     if(timezone.now() > deal.created_at + datetime.timedelta(days=30)):
         notifyDealStatus(customer, deal, False, price)
