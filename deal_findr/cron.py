@@ -13,4 +13,4 @@ def my_cron_job():
         customer = deal.customer
         serviceStart(customer, deal)
         num_deals += 1
-    self.stdout.write(self.style.SUCCESS('Successfully monitored "%d" deals' % num_deals))
+    logger.info('Successfully monitored %d deals' % num_deals)
