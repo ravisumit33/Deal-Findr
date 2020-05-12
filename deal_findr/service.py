@@ -91,12 +91,14 @@ async def servCustomer(customer, deal):
         logger.info(str(price))
         if price <= deal.budget:
             deal_done = True
-    except:
+    except Exception as e:
+        logger.info(str(e))
         pass
     #await asyncio.sleep(5*60)
 
-    await web_util.browser.close()
-    web_util.browser = None
+    if web_util.browser is not None:
+        await web_util.browser.close()
+        web_util.browser = None
 
     if deal_done:
         notifyDealStatus(customer, deal, True, price)
