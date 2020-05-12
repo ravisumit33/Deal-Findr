@@ -1,3 +1,5 @@
+import logging
+
 from deal_findr import models
 from deal_findr.service import serviceStart, notifyDealStatus
 
