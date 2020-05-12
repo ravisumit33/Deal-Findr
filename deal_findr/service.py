@@ -62,14 +62,15 @@ async def servCustomer(customer, deal):
 
     if deal.productName == '': 
         while try_count < 5:
-            #try:
-            productName = await website.getName(deal.productURL, web_util)
-            obj = await database_sync_to_async(models.Deal.objects.filter)(id=deal.id)
-            await database_sync_to_async(obj.update)(productName=productName)
-            break
-            #except:
-            try_count += 1
-            await asyncio.sleep(1*60)
+            try:
+                productName = await website.getName(deal.productURL, web_util)
+                obj = await database_sync_to_async(models.Deal.objects.filter)(id=deal.id)
+                await database_sync_to_async(obj.update)(productName=productName)
+                break
+            except Exception as e:
+                logger.error(str(e))
+                try_count += 1
+                await asyncio.sleep(1*60)
 
     if try_count == 5:
         logger.error("Unable to get product name")
@@ -80,25 +81,25 @@ async def servCustomer(customer, deal):
 
     logger.info(deal.productName)
 
-    #deadline = timezone.now() + datetime.timedelta(days=30)
     logger.info("Price monitoring started...")
     price = float('inf')
 
     deal_done = False
-    #while timezone.now() < deadline:
+
     try:
         price = await website.getPrice(deal.productURL, web_util) 
         logger.info(str(price))
         if price <= deal.budget:
             deal_done = True
     except Exception as e:
-        logger.info(str(e))
+        logger.error(str(e))
         pass
-    #await asyncio.sleep(5*60)
 
     if web_util.browser is not None:
         await web_util.browser.close()
         web_util.browser = None
+    else:
+        logger.error("Browser instance should not be None")
 
     if deal_done:
         notifyDealStatus(customer, deal, True, price)
@@ -109,6 +110,7 @@ async def servCustomer(customer, deal):
         notifyDealStatus(customer, deal, False, price)
         obj = await database_sync_to_async(models.Deal.objects.filter)(id=deal.id)
         await database_sync_to_async(obj.delete)()
+        logger.info("Deal expired")
 
     logger.info("Exiting Customer Service")
 
