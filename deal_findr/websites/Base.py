@@ -17,7 +17,8 @@ class WebUtility():
                 'handleSIGHUP': False,
                 'args': [
                     '--no-sandbox',
-                    '--disable-setuid-sandbox'
+                    '--disable-setuid-sandbox',
+                    '--enable-features=NetworkService'
                 ]
             })
             self.asession._browser = self.browser
