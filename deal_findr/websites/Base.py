@@ -1,5 +1,6 @@
 from requests_html import AsyncHTMLSession
-import pyppeteer
+import pyppdf.patch_pyppeteer
+from pyppeteer import launch
 
 class WebUtility():
 
@@ -9,7 +10,7 @@ class WebUtility():
 
     async def getObject(self, productURL):
         if self.browser is None:
-            self.browser = await pyppeteer.launch({
+            self.browser = await launch({
                 'ignoreHTTPSErrors': True,
                 'headless': True,
                 'handleSIGINT': False,
@@ -17,7 +18,7 @@ class WebUtility():
                 'handleSIGHUP': False,
                 'args': [
                     '--no-sandbox',
-                    '--disable-setuid-sandbox'
+                    '--disable-setuid-sandbox',
                 ]
             })
             self.asession._browser = self.browser

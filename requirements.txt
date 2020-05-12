@@ -11,3 +11,4 @@ django-crontab
 django-widget-tweaks
 channels
 apscheduler
+pyppdf
