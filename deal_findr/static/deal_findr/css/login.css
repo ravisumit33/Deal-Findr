@@ -13,19 +13,9 @@ body{
   border:1px solid rgba(0,0,0,0.1);
 }
 
-.section::before { 
-  display: block; 
-  content: " "; 
-  margin-top: -52.6px; 
-  height: 52.6px; 
-  visibility: hidden; 
-  pointer-events: none;
-}
-
 .bgSection{
     background: rgba(255,255,255,0.6);
 }
-
 
 .lead2{
     font-size: 35px;
@@ -78,10 +68,6 @@ body{
 
 .far{
     color: brown;
-}
-
-#Pricing{
-    margin-top: 52.6px;
 }
 
 #Free{

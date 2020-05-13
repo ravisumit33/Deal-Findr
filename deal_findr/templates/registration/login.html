@@ -12,12 +12,6 @@
 
 {% block content %}
 
-
-<!-- Navigation -->
-<!--<div class="bgImage">
-  <img src="{% static 'deal_findr/images/background.jpg' %}" class="blur img-fluid">
-</div>
--->
 <header class="sticky-top">
 
   {% if form.non_field_errors %}
@@ -59,7 +53,7 @@
         <!-- Links -->
         <ul class="navbar-nav mr-auto">
           <li class="nav-item">
-            <a class="nav-link" href="#Jumbotron">Home
+            <a class="nav-link" href="#Home">Home
               <span class="sr-only">(current)</span>
             </a>
           </li>
@@ -114,7 +108,7 @@
 <main>
 
   <!-- Intro with signup -->
-  <div class="jumbotron jumbotron-fluid bgSection section" id="Jumbotron">
+  <div class="jumbotron jumbotron-fluid bgSection section" id="Home">
 
     <div class="container">
       <div class="row">
@@ -124,7 +118,7 @@
           <!-- Intro -->
           <h1 class="display-1">Deal Findr</h1>
           <div class="lead my-4">
-            <p class="lead1">Make online shopping hassleless</p>
+            <p class="lead1">Make online shopping hasslefree</p>
             <p>Give your wishlist and chillax!!</p>
           </div>
           <!-- Intro -->
@@ -161,8 +155,8 @@
   <!-- Intro with signup -->
 
   <!-- Features -->
-  <div id="Features" class="section">
-    <div class="container">
+  <div class="section" id="Features">
+    <div class="container"> 
       <div class="card-deck">
         <div class="card">
           <img class="card-img-top img-fluid" src="{% static 'deal_findr/images/multi_website.jpeg' %}" alt="Multi-Website support">
@@ -192,8 +186,8 @@
 
 
   <!-- Pricing -->
-  <div id="Pricing" class="section bgSection">
-    <div class="container pb-5">
+  <div class="section bgSection" id="Pricing">
+    <div class="container py-5">
       <div class="row">
         <div class="col-xs-12 col-md-6 py-4">
           <img class="img-fluid" src="{% static 'deal_findr/images/free.png' %}" alt="Free of cost" width="60%">
@@ -240,6 +234,6 @@
 {% endblock %}
 
 
-{% block bodyscripts %}
+{% block headerscripts %}
 <script src="{% static 'deal_findr/js/login.js' %}"></script>
 {% endblock %}

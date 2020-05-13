@@ -22,7 +22,7 @@ def send_sms(mob_number, text):
     logger.info('SMS sent')
 
 def send_email(email, subject, text, html):
-    from_email, to = 'Deal_Findr<ravisumit305@gmail.com>', email
+    from_email, to = 'Deal Findr<ravisumit305@gmail.com>', email
     msg = EmailMultiAlternatives(subject, html, from_email, [to])
     msg.content_subtype = 'html'
     msg.mixed_subtype = 'related'
