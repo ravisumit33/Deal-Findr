@@ -18,7 +18,6 @@ let bindScrollSpy = function() {
         target: '.navbar',
         offset: getOffset()
     });
-    $('body').scrollspy('refresh');
 }
 
 $(document).ready(function(){
